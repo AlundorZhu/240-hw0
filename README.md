@@ -1,27 +1,41 @@
-# Homework 5: Introduction to Rust (Optional)
+# ECS 240 Homework 0: Introduction to Rust
 
-**Note: This homework is optional. It will be worth a small amount of extra credit (5 points).**
+This homework is a coding assignment to help you get set up with Rust
+and to provide a Rust tutorial.
+This homework will be worth 50 points.
+Future homeworks will be problem sets worth 100 points.
 
-The homework is self-contained, and should give you a small taste of programming in Rust. If you are interested in learning more about Rust, you can continue to work on this assignment. If you are not interested in Rust, you can skip this assignment.
+## Resources
 
-I originally taught this homework as part of the Rust class at UPenn,
-spring 2021.
-If you are interested in going further with Rust, all of the original
-course material is available [here](https://github.com/upenn-cis198)!
-This assignment is HW1 from that course.
+This homework is generally self-contained.
+If you are interested in going further with Rust,
+you may want to check out the material for my [Rust course at UPenn](https://github.com/upenn-cis198)
+(which includes additional lectures and homeworks),
+and my PhD student Muhammad Hassnain has put together a list of Rust resources
+[here](https://muhammad-hassnain.github.io/rust/resources/).
+
+I particularly recommend [the Brown version of the Rust book](https://rust-book.cs.brown.edu/) as a tutorial and reference, as it also includes little pop quizzes you can use to check your understanding along the way.
+
+As always, come to office hours or post to Piazza if you get stuck or have any questions!
 
 ## Installation
 
-Rust is very easy to install on most systems!
+Rust is very easy to install on most systems.
 You should just have to copy and paste the command
 from [the Rust website](https://www.rust-lang.org/tools/install).
+
+If you are using Windows, I recommend using Windows Subsystem for Linux (WSL).
+It's an excellent tool that is well-engineered and widely used by Windows developers in industry. There is a good guide on how to set it up [here](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+If you are editing with VSCode, you will also want to install the [Rust-analyzer VSCode extension](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer), which is the official language server for Rust.
 
 Rust code is run and built through a tool called Cargo (which is installed automatically by the above).
 You should be able to run
 ```
 cargo --version
 ```
-to see your version of Cargo. The main commands you need to know about are the following:
+to see your version of Cargo. I'm on Rust 1.98, so to be safe, ensure that your Rust version is at least 1.98. (`rustup update` to update the version of Rust.)
+The main commands you need to know about are the following:
 ```
 cargo run
 cargo run --release
@@ -30,8 +44,10 @@ cargo clippy
 cargo fmt
 ```
 
-The first two are to run your code (in `src/main.rs`), either in debug mode or release mode. The next two are for running your tests and checking your code for common mistakes. The last one is for automatically formatting your code according to the Rust style guide.
-You can also use `cargo build` to compile the code without running it.
+The first two are to run your code (in `src/main.rs`), either in debug mode or release mode.
+Debug mode is used for development, and release mode (much faster) is used in production.
+The next two are for running your tests and checking your code for common mistakes. The last one is for automatically formatting your code according to the Rust style guide.
+You can also use `cargo build` or `cargo build --release` to compile the code without running it.
 
 ## Setup
 
@@ -45,19 +61,24 @@ Please modify files `part1.rs`, `part2.rs`, and `part3.rs` as instructed in each
 
 Use `cargo test` to compile and run the tests. This may also reveal further compiler errors.
 
-## Clippy and Rustfmt
+## Clippy and Fmt
 
 When writing Rust, before a final submission,
-it is best practice to ensure that your `clippy` and `rustfmt`
+it is always best practice to ensure that your `clippy` and `rustfmt`
 are happy with your code! (`cargo clippy` and `cargo fmt`)
+Clippy is the Rust linter. Rustfmt is the Rust code formatter.
+(These can also be configured to run in your code editor, including VSCode with the Rust language extension.)
 
-After everything is implemented for a part, also remove the lines
+I require that you run Clippy and Fmt on your code for this HW and address all warnings.
+After everything is implemented for a part, remove the following lines:
 ```rust
 #![allow(dead_code)]
 #![allow(unused_variables)]
 ```
 
-You are welcome to configure `rustfmt` a bit differently by editing `rustfmt.toml` (e.g. to change max line width). Additionally, if you encounter a case where you think `clippy` or `rustfmt` has it wrong, make a post on Piazza. If I agree, you can disable it for a particular block of code.
+These lines tell Clippy to ignore certain warnings, which is useful during development (when we aren't worried about dead code), but we want to check once we have finished and want to ship the code that everything is working properly as intended.
+
+You are welcome to configure `rustfmt` a bit differently by editing `rustfmt.toml`. I have the line width set to 80 characters by default. Additionally, if you encounter a case where you think `clippy` or `rustfmt` has it wrong, make a post on Piazza. If I agree, you can disable it for a particular block of code.
 
 ## File Structure
 
@@ -76,6 +97,5 @@ You might notice the `pub` keyword everywhere. In each file, this makes the func
 
 ## Credits
 
-I originally taught this homework as part of the Rust class at UPenn (CIS 198), spring 2021.
-Thanks to the previous instructors for earlier versions of this homework,
+Thanks to the previous instructors of CIS 198 at UPenn for earlier versions of this homework,
 especially, [gatowololo (Omar)](https://gatowololo.github.io/).
