@@ -1,5 +1,7 @@
 # ECS 240 Homework 0: Introduction to Rust
 
+**Due: Monday, October 5, 2026 at 11:59pm**
+
 This homework is a coding assignment to help you get set up with Rust
 and to provide a Rust tutorial.
 This homework will be worth 50 points.
@@ -94,6 +96,14 @@ pub mod part1;
 Once all tests are working on `part1.rs` uncomment as needed to allow the other module to be checked. This way we avoid having errors from part2.rs or part3.rs stop us from running tests or compiling too much of the working code.
 
 You might notice the `pub` keyword everywhere. In each file, this makes the function public so that `main.rs` has access to it, in case you want to run it there. It also has the benefit that once you remove `#![allow(dead_code)]`, you shouldn't get dead code warnings.
+
+## Submission
+
+Submission is via Gradescope.
+Please submit your code by uploading **the whole folder, excluding the `target/` and `.git/` folders** via a Zip file.
+(I usually find it easiest to copy the entire folder to a new spot, then delete the folders you don't want before zipping. Excluding the `target/` folder is important as that is where all the built code and binaries go, and it can get very bloated for larger projects. This is the same reason why we always add `target/` to `.gitignore`.)
+
+Download your code from the Gradescope website to a new location and run `cargo run` to make sure it worked.
 
 ## Credits
 
