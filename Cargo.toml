@@ -1,0 +1,7 @@
+[package]
+name = "ECS240 HW0"
+version = "0.1.0"
+authors = [
+    "Caleb Stanford <cdstanford@ucdavis.edu>"
+]
+[dependencies]
