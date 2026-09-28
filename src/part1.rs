@@ -22,17 +22,18 @@
     Which of the three do you prefer?
 */
 
+use std::collections::BTreeSet;
+
 pub fn double_v1(n: i32) -> i32 {
-    unimplemented!()
+    n + n
 }
 
 pub fn double_v2(n: &i32) -> i32 {
-    unimplemented!()
+    2 * n
 }
 
 pub fn double_v3(n: &mut i32) {
-    // double n in place
-    unimplemented!()
+   *n *= 2 
 }
 
 // Example unit test (so you can recall the syntax)
@@ -41,12 +42,20 @@ fn test_double_v1() {
     assert_eq!(double_v1(2), 4);
     assert_eq!(double_v1(-3), -6);
 }
-// #[test]
-// fn test_double_v2() {
-// }
-// #[test]
-// fn test_double_v3() {
-// }
+#[test]
+fn test_double_v2() {
+   assert_eq!(double_v2(&1), 2);
+   assert_eq!(double_v2(&3), 6);
+}
+#[test]
+fn test_double_v3() {
+    let mut n = 2i32;
+    double_v3(&mut n);
+    assert_eq!(n, 4);
+
+    double_v3(&mut n);
+    assert_eq!(n, 8)
+}
 
 /*
     Problem 2: Integer square root
@@ -56,11 +65,16 @@ fn test_double_v1() {
     efficiently than trying every possibility.
 */
 pub fn sqrt(n: usize) -> usize {
-    unimplemented!()
+   n.isqrt() 
 }
 
 // Remember to write unit tests here (and on all future functions)
-
+#[test]
+fn test_sqrt() {
+    for i in 0..10 {
+        assert!(sqrt(i) * sqrt(i) <= i);
+    }
+}
 /*
     Problem 3: Slice sum
 
@@ -74,18 +88,20 @@ pub fn sqrt(n: usize) -> usize {
 */
 pub fn sum_v1(slice: &[i32]) -> i32 {
     // do some initialization...
+    let mut result = 0i32;
     for &v in slice {
-        // ...
+        result += v; 
     }
-    unimplemented!()
+    result
 }
 
 pub fn sum_v2(slice: &[i32]) -> i32 {
     // do some initialization...
+    let mut result = 0i32;
     for v in slice {
-        // ...
+        result += v;
     }
-    unimplemented!()
+    result
 }
 
 /*
@@ -97,7 +113,13 @@ pub fn sum_v2(slice: &[i32]) -> i32 {
 */
 
 pub fn unique(slice: &[i32]) -> Vec<i32> {
-    unimplemented!()
+    let mut s = BTreeSet::new();
+    for v in slice {
+        if !s.contains(v) {
+            s.insert(v); 
+        }
+    }
+    s.into_iter().cloned().collect()
 }
 
 /*
@@ -108,7 +130,7 @@ pub fn unique(slice: &[i32]) -> Vec<i32> {
     to know is that pred is a function from i32 to bool.
 */
 pub fn filter(slice: &[i32], pred: impl Fn(i32) -> bool) -> Vec<i32> {
-    unimplemented!()
+   slice.iter().cloned().filter(|&v| pred(v)).collect() 
 }
 
 #[test]
@@ -127,7 +149,11 @@ fn test_filter() {
     where v[i] is the ith fibonacci number.
 */
 pub fn fibonacci(n1: i32, n2: i32, out_size: usize) -> Vec<i32> {
-    unimplemented!()
+    let mut r = vec![n1, n2];
+    for i in 2..out_size {
+        r.push(r[i - 1] + r[i - 2]);
+    }
+    r
 }
 
 /*
@@ -141,11 +167,11 @@ pub fn fibonacci(n1: i32, n2: i32, out_size: usize) -> Vec<i32> {
     What are some reasons the second function is not efficient?
 */
 pub fn str_concat(s1: &str, s2: &str) -> String {
-    unimplemented!()
+   s1.to_string() + s2 
 }
 
 pub fn string_concat(s1: String, s2: String) -> String {
-    unimplemented!()
+    s1 + s2.as_str()
 }
 
 /*
@@ -156,7 +182,7 @@ pub fn string_concat(s1: String, s2: String) -> String {
 */
 
 pub fn concat_all(v: Vec<String>) -> String {
-    unimplemented!()
+    v.as_slice().concat()
 }
 
 /*
@@ -174,11 +200,11 @@ pub fn concat_all(v: Vec<String>) -> String {
 */
 
 pub fn parse_all(v: Vec<String>) -> Vec<i32> {
-    unimplemented!()
+    v.iter().map(|s| s.parse::<i32>().expect("valid int")).collect()
 }
 
 pub fn print_all(v: Vec<i32>) -> Vec<String> {
-    unimplemented!()
+    v.iter().map(|i| i.to_string()).collect()
 }
 
 #[test]
@@ -205,7 +231,10 @@ fn test_parse_print() {
 */
 
 pub fn concat_even_fibonaccis(n: usize) -> String {
-    unimplemented!()
+    let v = fibonacci(1, 1, n);
+    let v = filter(v.as_slice(), |x| x % 2 == 0);
+    let v = print_all(v);
+    return concat_all(v);
 }
 
 #[test]
