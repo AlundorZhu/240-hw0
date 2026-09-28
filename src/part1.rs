@@ -232,7 +232,7 @@ pub fn concat_even_fibonaccis(n: usize) -> String {
     let v = fibonacci(1, 1, n);
     let v = filter(v.as_slice(), |x| x % 2 == 0);
     let v = print_all(v);
-    return concat_all(v);
+    concat_all(v)
 }
 
 #[test]
