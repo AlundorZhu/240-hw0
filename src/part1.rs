@@ -8,8 +8,6 @@
 
 // Remove these once you are done editing the file!
 // This will result in useful warnings if you missed something.
-#![allow(dead_code)]
-#![allow(unused_variables)]
 
 /*
     Problem 1: Double
@@ -33,7 +31,7 @@ pub fn double_v2(n: &i32) -> i32 {
 }
 
 pub fn double_v3(n: &mut i32) {
-   *n *= 2 
+    *n *= 2
 }
 
 // Example unit test (so you can recall the syntax)
@@ -44,8 +42,8 @@ fn test_double_v1() {
 }
 #[test]
 fn test_double_v2() {
-   assert_eq!(double_v2(&1), 2);
-   assert_eq!(double_v2(&3), 6);
+    assert_eq!(double_v2(&1), 2);
+    assert_eq!(double_v2(&3), 6);
 }
 #[test]
 fn test_double_v3() {
@@ -65,7 +63,7 @@ fn test_double_v3() {
     efficiently than trying every possibility.
 */
 pub fn sqrt(n: usize) -> usize {
-   n.isqrt() 
+    n.isqrt()
 }
 
 // Remember to write unit tests here (and on all future functions)
@@ -90,7 +88,7 @@ pub fn sum_v1(slice: &[i32]) -> i32 {
     // do some initialization...
     let mut result = 0i32;
     for &v in slice {
-        result += v; 
+        result += v;
     }
     result
 }
@@ -116,7 +114,7 @@ pub fn unique(slice: &[i32]) -> Vec<i32> {
     let mut s = BTreeSet::new();
     for v in slice {
         if !s.contains(v) {
-            s.insert(v); 
+            s.insert(v);
         }
     }
     s.into_iter().cloned().collect()
@@ -130,7 +128,7 @@ pub fn unique(slice: &[i32]) -> Vec<i32> {
     to know is that pred is a function from i32 to bool.
 */
 pub fn filter(slice: &[i32], pred: impl Fn(i32) -> bool) -> Vec<i32> {
-   slice.iter().cloned().filter(|&v| pred(v)).collect() 
+    slice.iter().cloned().filter(|&v| pred(v)).collect()
 }
 
 #[test]
@@ -167,7 +165,7 @@ pub fn fibonacci(n1: i32, n2: i32, out_size: usize) -> Vec<i32> {
     What are some reasons the second function is not efficient?
 */
 pub fn str_concat(s1: &str, s2: &str) -> String {
-   s1.to_string() + s2 
+    s1.to_string() + s2
 }
 
 pub fn string_concat(s1: String, s2: String) -> String {
