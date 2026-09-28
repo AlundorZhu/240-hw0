@@ -198,6 +198,7 @@ fn append_row(grid: &mut Vec<Vec<bool>>, row: Vec<bool>) {
 fn is_first_row(grid: &[Vec<bool>], row: &[bool]) -> bool {
     // Check if row is the first row in grid
     // Remember to handle the case when grid is empty
+    unimplemented!()
 }
 
 /*
