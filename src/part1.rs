@@ -18,6 +18,8 @@
     which fail (or fail to compile) for some but not others?
 
     Which of the three do you prefer?
+
+    A: I prefer version 1, it require less from the call site and passing reference for i32 doesn't save anything, since i32 is just 4bytes. 
 */
 
 use std::collections::BTreeSet;
@@ -69,7 +71,7 @@ pub fn sqrt(n: usize) -> usize {
 // Remember to write unit tests here (and on all future functions)
 #[test]
 fn test_sqrt() {
-    for i in 0..10 {
+    for i in 0..100 {
         assert!(sqrt(i) * sqrt(i) <= i);
     }
 }
@@ -83,6 +85,8 @@ fn test_sqrt() {
     Clippy should detect if you mess this up.
 
     Which of the two ways do you prefer?
+
+    A: version 2 looks nicer
 */
 pub fn sum_v1(slice: &[i32]) -> i32 {
     // do some initialization...
@@ -100,6 +104,28 @@ pub fn sum_v2(slice: &[i32]) -> i32 {
         result += v;
     }
     result
+}
+
+#[test]
+fn test_sum_v1() {
+    assert_eq!(sum_v1(&[]), 0);
+    assert_eq!(sum_v1(&[5]), 5);
+    assert_eq!(sum_v1(&[1, 2, 3, 4]), 10);
+    assert_eq!(sum_v1(&[-1, -2, 3]), 0);
+}
+
+#[test]
+fn test_sum_v2() {
+    assert_eq!(sum_v2(&[]), 0);
+    assert_eq!(sum_v2(&[5]), 5);
+    assert_eq!(sum_v2(&[1, 2, 3, 4]), 10);
+    assert_eq!(sum_v2(&[-1, -2, 3]), 0);
+}
+
+#[test]
+fn test_sum_versions_agree() {
+    let v = vec![7, -3, 0, 12, -8, 100];
+    assert_eq!(sum_v1(&v), sum_v2(&v));
 }
 
 /*
@@ -120,6 +146,25 @@ pub fn unique(slice: &[i32]) -> Vec<i32> {
     s.into_iter().cloned().collect()
 }
 
+#[test]
+fn test_unique() {
+    assert_eq!(unique(&[]), Vec::<i32>::new());
+    assert_eq!(unique(&[1]), vec![1]);
+    assert_eq!(unique(&[1, 2, 3]), vec![1, 2, 3]);
+    assert_eq!(unique(&[2, 2, 2]), vec![2]);
+    assert_eq!(unique(&[1, 2, 1, 3, 2]), vec![1, 2, 3]);
+    assert_eq!(unique(&[-1, 0, -1, 5]), vec![-1, 0, 5]);
+}
+
+#[test]
+fn test_unique_no_duplicates() {
+    let v = unique(&[4, 1, 4, 9, 1, 0, 9]);
+    assert_eq!(v.len(), 4);
+    for x in [0, 1, 4, 9] {
+        assert!(v.contains(&x));
+    }
+}
+
 /*
     Problem 5: Filter
 
@@ -137,6 +182,21 @@ fn test_filter() {
         n % 2 == 0
     }
     assert_eq!(filter(&vec![1, 2, 3, 4, 5, 6], &is_even), vec![2, 4, 6]);
+    assert_eq!(filter(&[], is_even), Vec::<i32>::new());
+    assert_eq!(filter(&[1, 3, 5], is_even), Vec::<i32>::new());
+    assert_eq!(filter(&[-4, -3, 0, 7], is_even), vec![-4, 0]);
+}
+
+#[test]
+fn test_filter_closures() {
+    // keep everything / nothing
+    assert_eq!(filter(&[1, 2, 3], |_| true), vec![1, 2, 3]);
+    assert_eq!(filter(&[1, 2, 3], |_| false), Vec::<i32>::new());
+    // preserves order and duplicates
+    assert_eq!(filter(&[5, 1, 5, 9, 2], |x| x > 3), vec![5, 5, 9]);
+    // closure capturing a variable
+    let threshold = 10;
+    assert_eq!(filter(&[3, 10, 15, 20], |x| x >= threshold), vec![10, 15, 20]);
 }
 
 /*
@@ -163,6 +223,8 @@ pub fn fibonacci(n1: i32, n2: i32, out_size: usize) -> Vec<i32> {
     You may use any standard library function you wish.
 
     What are some reasons the second function is not efficient?
+
+    A: Because for the second version the caller have to give up ownership by either `.clone` or put things in `{}` 
 */
 pub fn str_concat(s1: &str, s2: &str) -> String {
     s1.to_string() + s2
@@ -170,6 +232,32 @@ pub fn str_concat(s1: &str, s2: &str) -> String {
 
 pub fn string_concat(s1: String, s2: String) -> String {
     s1 + s2.as_str()
+}
+
+#[test]
+fn test_str_concat() {
+    assert_eq!(str_concat("hello", " world"), "hello world");
+    assert_eq!(str_concat("", ""), "");
+    assert_eq!(str_concat("abc", ""), "abc");
+    assert_eq!(str_concat("", "abc"), "abc");
+}
+
+#[test]
+fn test_string_concat() {
+    assert_eq!(
+        string_concat("hello".to_string(), " world".to_string()),
+        "hello world"
+    );
+    assert_eq!(string_concat(String::new(), String::new()), "");
+    assert_eq!(string_concat("abc".to_string(), String::new()), "abc");
+    assert_eq!(string_concat(String::new(), "abc".to_string()), "abc");
+}
+
+#[test]
+fn test_concat_versions_agree() {
+    for (a, b) in [("x", "y"), ("", "z"), ("rust", "acean")] {
+        assert_eq!(str_concat(a, b), string_concat(a.to_string(), b.to_string()));
+    }
 }
 
 /*
@@ -181,6 +269,22 @@ pub fn string_concat(s1: String, s2: String) -> String {
 
 pub fn concat_all(v: Vec<String>) -> String {
     v.as_slice().concat()
+}
+
+#[test]
+fn test_concat_all() {
+    fn strings(v: &[&str]) -> Vec<String> {
+        v.iter().map(|s| s.to_string()).collect()
+    }
+    assert_eq!(concat_all(vec![]), "");
+    assert_eq!(concat_all(strings(&["solo"])), "solo");
+    assert_eq!(concat_all(strings(&["a", "b", "c"])), "abc");
+    assert_eq!(concat_all(strings(&["hello", " ", "world"])), "hello world");
+    // empty strings contribute nothing
+    assert_eq!(concat_all(strings(&["", "x", "", "y", ""])), "xy");
+    assert_eq!(concat_all(strings(&["", "", ""])), "");
+    // order is preserved
+    assert_eq!(concat_all(strings(&["z", "y", "1"])), "zy1");
 }
 
 /*
