@@ -22,23 +22,29 @@ use std::io::Read;
 */
 
 // split_ref must have the return type Vec<&str>
+fn split_ref(s: &str) -> Vec<&str> {
+    s.split_whitespace().collect()
+}
 // split_clone must have the return type Vec<String>
+fn split_clone(s: &str) -> Vec<String> {
+    s.split_whitespace().map(str::to_owned).collect()
+}
 
-// #[test]
-// fn test_split_ref(){
-//     let string = "Hello World!".to_string();
-//     assert_eq!(split_ref(& string), ["Hello", "World!"]);
-//     assert_eq!(split_ref("Hello World!"), & ["Hello", "World!"]);
-//     assert_eq!(split_ref("Hello World!"), vec!["Hello", "World!"]);
-// }
+#[test]
+fn test_split_ref(){
+    let string = "Hello World!".to_string();
+    assert_eq!(split_ref(& string), ["Hello", "World!"]);
+    assert_eq!(split_ref("Hello World!"), & ["Hello", "World!"]);
+    assert_eq!(split_ref("Hello World!"), vec!["Hello", "World!"]);
+}
 
-// #[test]
-// fn test_split_clone(){
-//     let string = "Hello World!".to_string();
-//     assert_eq!(split_clone(& string), ["Hello", "World!"]);
-//     assert_eq!(split_clone("Hello World!"), & ["Hello", "World!"]);
-//     assert_eq!(split_clone("Hello World!"), vec!["Hello", "World!"]);
-// }
+#[test]
+fn test_split_clone(){
+    let string = "Hello World!".to_string();
+    assert_eq!(split_clone(& string), ["Hello", "World!"]);
+    assert_eq!(split_clone("Hello World!"), & ["Hello", "World!"]);
+    assert_eq!(split_clone("Hello World!"), vec!["Hello", "World!"]);
+}
 
 /*
     Problem 2: Longest string
@@ -48,13 +54,21 @@ use std::io::Read;
     Return a new String (we will see later how to return a &str.)
 */
 
-// #[test]
-// fn test_pick_longest {
-//     assert_eq!(
-//         pick_longest(& "cat".to_string(), & "dog".to_string()),
-//         "cat".to_string()
-//     );
-// }
+fn pick_longest<'a>(s1: &str, s2: &str) -> String {
+    if s1.len() >= s2.len() {
+        s1.to_string()
+    } else {
+        s2.to_string()
+    }
+}
+
+#[test]
+fn test_pick_longest() {
+    assert_eq!(
+        pick_longest(& "cat".to_string(), & "dog".to_string()),
+        "cat".to_string()
+    );
+}
 
 // Question 1:
 // For the curious, attempt to return reference, that is:
@@ -63,6 +77,8 @@ use std::io::Read;
 //
 // What goes wrong when you try to implement this function? Why is this
 // the case?
+// 
+// A: Needs to have lifetime annotations: `fn pick_longest<'a>(s1: &'a str, s2: &'a str) -> &'a str`
 
 /*
     Problem 3: File to string
@@ -79,7 +95,19 @@ use std::io::Read;
 */
 
 pub fn file_to_string(path: &str) -> String {
-    unimplemented!()
+    let mut f = File::open(path).expect("File to exist");
+    let mut r = String::new();
+    let mut buffer = [0u8; 4096];
+
+    while let Ok(bytes_read) = f.read(&mut buffer) {
+        if bytes_read == 0 {
+            break;
+        }
+
+        let valid = &buffer[..bytes_read];
+        r += str::from_utf8(&valid).expect("safe conversion");
+    }
+    r
 }
 
 /*
@@ -93,12 +121,12 @@ pub fn file_to_string(path: &str) -> String {
 #[test]
 fn test_add1() {
     let mut x = 1;
-    add1(x);
+    add1(&mut x);
     assert_eq!(x, 2);
 }
 
-pub fn add1(mut x : i32) -> () {
-    x += 1;
+pub fn add1(x: &mut i32) {
+    *x += 1;
 }
 
 /*
@@ -107,11 +135,11 @@ pub fn add1(mut x : i32) -> () {
     The error says: cannot assign to immutable borrowed content `*str1`
     But we declared it mutable? Fix by changing only the line below.
 */
-// pub fn mut2() {
-//     let hello = String::from("hello");
-//
-//     // CHANGE ONLY THIS LINE:
-//     let mut str1: &String = &String::from("str1");
-//
-//     *str1 = hello;
-// }
+pub fn mut2() {
+    let hello = String::from("hello");
+
+    // CHANGE ONLY THIS LINE:
+    let  str1: &mut String = &mut String::from("str1");
+
+    *str1 = hello;
+}
