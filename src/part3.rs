@@ -6,10 +6,6 @@
     Also answer the questions in text.
 */
 
-// Remove these once you are done editing the file!
-#![allow(dead_code)]
-#![allow(unused_variables)]
-
 /*
     Problem 1: Swap ints
 
@@ -63,7 +59,7 @@ fn copy_int_test() {
 }
 
 // Now implement the following function that duplicates a string n times.
-fn duplicate_string(s: &str, times: usize) -> Vec<String> {
+pub fn duplicate_string(s: &str, times: usize) -> Vec<String> {
     let mut r = Vec::new();
     for _ in 0..times {
         r.push(s.to_string());
@@ -84,7 +80,7 @@ fn duplicate_string_test() {
     it's called.
 */
 
-fn copy_me(string: /* Change in here only*/ &String) -> String {
+pub fn copy_me(string: /* Change in here only*/ &String) -> String {
     string.clone()
 }
 
@@ -111,17 +107,17 @@ fn copy_me_test2() {
     such as "unsafe code" can be used to turn off Rust's safety and lifetime
     checks.)
 */
-static EMPTY: String = String::new();
-fn new_ref_string() -> &'static String {
+pub static EMPTY: String = String::new();
+pub fn new_ref_string() -> &'static String {
     &EMPTY
 }
 
-fn new_ref_str() -> &'static str {
+pub fn new_ref_str() -> &'static str {
     "hello"
 }
 
 // The same function from part2
-fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
+pub fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
     if s1.len() >= s2.len() {
         s1
     } else {
@@ -152,7 +148,7 @@ fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
                  the vector. Can't use it after the str in the vector get dropped.
 */
 
-fn pick_longest_in_v1(v: Vec<String>) -> String {
+pub fn pick_longest_in_v1(v: Vec<String>) -> String {
     let mut r = "";
     for s in &v {
         r = pick_longest2(r, s.as_str());
@@ -173,7 +169,7 @@ fn pick_longest_test_v1() {
     )
 }
 
-fn pick_longest_in_v2(v: Vec<&str>) -> &str {
+pub fn pick_longest_in_v2(v: Vec<&str>) -> &str {
     let mut r = "";
     for s in v {
         r = pick_longest2(r, s);
@@ -200,7 +196,7 @@ fn pick_longest_test_v2() {
     A: I prefer v3, it's the most efficient because it didn't copy the old vec
 */
 
-fn pad_with_zeros_v1(v: Vec<usize>, desired_len: usize) -> Vec<usize> {
+pub fn pad_with_zeros_v1(v: Vec<usize>, desired_len: usize) -> Vec<usize> {
     assert!(v.len() <= desired_len);
     let mut r = v.clone();
     r.resize(desired_len, 0);
@@ -208,7 +204,7 @@ fn pad_with_zeros_v1(v: Vec<usize>, desired_len: usize) -> Vec<usize> {
     r
 }
 
-fn pad_with_zeros_v2(slice: &[usize], desired_len: usize) -> Vec<usize> {
+pub fn pad_with_zeros_v2(slice: &[usize], desired_len: usize) -> Vec<usize> {
     assert!(slice.len() <= desired_len);
     let mut r = slice.to_vec();
     r.resize(desired_len, 0);
@@ -216,7 +212,7 @@ fn pad_with_zeros_v2(slice: &[usize], desired_len: usize) -> Vec<usize> {
     r
 }
 
-fn pad_with_zeros_v3(v: &mut Vec<usize>, desired_len: usize) {
+pub fn pad_with_zeros_v3(v: &mut Vec<usize>, desired_len: usize) {
     assert!(v.len() <= desired_len);
     for _ in v.len()..desired_len {
         v.push(0);
@@ -270,11 +266,11 @@ fn test_pad_twice_v3() {
     A: here row can take either Vec<bool> or a slice.
 */
 
-fn append_row(grid: &mut Vec<Vec<bool>>, row: Vec<bool>) {
+pub fn append_row(grid: &mut Vec<Vec<bool>>, row: Vec<bool>) {
     grid.push(row);
 }
 
-fn is_first_row(grid: &[Vec<bool>], row: &[bool]) -> bool {
+pub fn is_first_row(grid: &[Vec<bool>], row: &[bool]) -> bool {
     grid.first().is_some_and(|first| first == row)
 }
 
@@ -322,7 +318,7 @@ use std::collections::HashMap;
 // Documentation:
 // https://doc.rust-lang.org/std/collections/struct.HashMap.html
 
-fn vector_to_hashmap(v: &[(i32, String)]) -> HashMap<i32, String> {
+pub fn vector_to_hashmap(v: &[(i32, String)]) -> HashMap<i32, String> {
     let mut r: HashMap<i32, String> = HashMap::new();
     for (k, v) in v {
         r.insert(*k, v.clone());
@@ -332,7 +328,7 @@ fn vector_to_hashmap(v: &[(i32, String)]) -> HashMap<i32, String> {
 
 // Now rewrite this function to delete all entries in hashmap where the keys
 // are negative.
-fn delete_negative_keys(h: &mut HashMap<i32, i32>) {
+pub fn delete_negative_keys(h: &mut HashMap<i32, i32>) {
     h.retain(|k, _| *k >= 0);
 }
 
@@ -388,7 +384,7 @@ fn delete_negative_keys_test() {
     Use `or_insert` and `and_modify`.
 */
 
-fn merge_maps(
+pub fn merge_maps(
     merged: &mut HashMap<String, String>,
     add: HashMap<String, String>,
 ) {
