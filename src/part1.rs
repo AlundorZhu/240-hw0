@@ -19,7 +19,7 @@
 
     Which of the three do you prefer?
 
-    A: I prefer version 1, it require less from the call site and passing reference for i32 doesn't save anything, since i32 is just 4bytes. 
+    A: I prefer version 1, it require less from the call site and passing reference for i32 doesn't save anything, since i32 is just 4bytes.
 */
 
 use std::collections::BTreeSet;
@@ -224,7 +224,7 @@ pub fn fibonacci(n1: i32, n2: i32, out_size: usize) -> Vec<i32> {
 
     What are some reasons the second function is not efficient?
 
-    A: Because for the second version the caller have to give up ownership by either `.clone` or put things in `{}` 
+    A: Because for the second version the caller have to give up ownership by either `.clone` or put things in `{}`
 */
 pub fn str_concat(s1: &str, s2: &str) -> String {
     s1.to_string() + s2
@@ -256,7 +256,10 @@ fn test_string_concat() {
 #[test]
 fn test_concat_versions_agree() {
     for (a, b) in [("x", "y"), ("", "z"), ("rust", "acean")] {
-        assert_eq!(str_concat(a, b), string_concat(a.to_string(), b.to_string()));
+        assert_eq!(
+            str_concat(a, b),
+            string_concat(a.to_string(), b.to_string())
+        );
     }
 }
 

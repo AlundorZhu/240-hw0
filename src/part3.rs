@@ -36,7 +36,7 @@
 // }
 
 pub fn swap_ints(x1: &mut i32, x2: &mut i32) {
-    let tmp  = *x1;
+    let tmp = *x1;
 
     *x1 = *x2;
     *x2 = tmp;
@@ -53,11 +53,11 @@ fn copy_string_test() {
 }
 // This test doesn't work. Fix it by copying strings properly.
 // Q1. What went wrong?
-// A: String is a owership, one string can have one owner. Also 
+// A: String is a owership, one string can have one owner. Also
 // because String doesn't implement copy by default because it allocates in heap
 
 // Q2. How come it works fine here?
-// A: i32 implements copy by default 
+// A: i32 implements copy by default
 #[test]
 fn copy_int_test() {
     let i1 = 1;
@@ -67,7 +67,7 @@ fn copy_int_test() {
 
 // Now implement the following function that duplicates a string n times.
 fn duplicate_string(s: &str, times: usize) -> Vec<String> {
-    let mut r = Vec::new();  
+    let mut r = Vec::new();
     for _ in 0..times {
         r.push(s.to_string());
     }
@@ -76,10 +76,7 @@ fn duplicate_string(s: &str, times: usize) -> Vec<String> {
 
 #[test]
 fn duplicate_string_test() {
-    assert_eq!(
-        duplicate_string("test", 3),
-        vec!["test", "test", "test"]
-    )
+    assert_eq!(duplicate_string("test", 3), vec!["test", "test", "test"])
 }
 
 /*
@@ -117,7 +114,7 @@ fn copy_me_test2() {
     such as "unsafe code" can be used to turn off Rust's safety and lifetime
     checks.)
 */
-static  EMPTY: String = String::new();
+static EMPTY: String = String::new();
 fn new_ref_string() -> &'static String {
     &EMPTY
 }
@@ -128,7 +125,7 @@ fn new_ref_str() -> &'static str {
 
 // The same function from part2
 fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
-    if s1.len() >= s2.len(){
+    if s1.len() >= s2.len() {
         return s1;
     } else {
         return s2;
@@ -148,18 +145,18 @@ fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
     A: The lifetime of the output string should be as long as the string in the vectors
 
     Q2. What are the pros and cons of v1 and v2?
-    
-    A: 
+
+    A:
         v1 pros: don't need lifetime annotations, easier to read and write
         v1 cons: It only accepts Vec<String>. It needs a .to_string() call which allocate the memory
 
-        v2 pros: It accepts Vec<&str> and Vec<String> 
-        v2 cons: It needs lifetime annotations. And the returned str have it's lifetime tide to the str in 
+        v2 pros: It accepts Vec<&str> and Vec<String>
+        v2 cons: It needs lifetime annotations. And the returned str have it's lifetime tide to the str in
                  the vector. Can't use it after the str in the vector get dropped.
 */
 
 fn pick_longest_in_v1(v: Vec<String>) -> String {
-    let mut r  = "";
+    let mut r = "";
     for s in &v {
         r = pick_longest2(r, s.as_str());
     }
@@ -169,7 +166,14 @@ fn pick_longest_in_v1(v: Vec<String>) -> String {
 #[test]
 fn pick_longest_test_v1() {
     assert_eq!(pick_longest_in_v1(vec![]), "");
-    assert_eq!(pick_longest_in_v1(vec!["a".to_string(), "abc".to_string(), "ab".to_string()]), "abc")
+    assert_eq!(
+        pick_longest_in_v1(vec![
+            "a".to_string(),
+            "abc".to_string(),
+            "ab".to_string()
+        ]),
+        "abc"
+    )
 }
 
 fn pick_longest_in_v2<'a>(v: Vec<&'a str>) -> &'a str {
@@ -179,7 +183,6 @@ fn pick_longest_in_v2<'a>(v: Vec<&'a str>) -> &'a str {
     }
     return r;
 }
-
 
 #[test]
 fn pick_longest_test_v2() {
@@ -262,7 +265,7 @@ fn test_pad_twice_v3() {
     Why is this more general than being passed a &[bool]
     and cloning it?
 
-    A: First it's more efficient then making a copy and then append, 
+    A: First it's more efficient then making a copy and then append,
        second it makes sense to take ownership when you are mutating it.
 
     Second, write a function which returns whether
@@ -271,7 +274,7 @@ fn test_pad_twice_v3() {
 
     Why is this more general than being passed a Vec<bool>?
 
-    A: here row can take either Vec<bool> or a slice.  
+    A: here row can take either Vec<bool> or a slice.
 */
 
 fn append_row(grid: &mut Vec<Vec<bool>>, row: Vec<bool>) {
@@ -394,10 +397,11 @@ fn delete_negative_keys_test() {
 
 fn merge_maps(
     merged: &mut HashMap<String, String>,
-    add: HashMap<String,String>
+    add: HashMap<String, String>,
 ) {
     for (k, v) in add {
-        merged.entry(k)
+        merged
+            .entry(k)
             .and_modify(|existing| *existing += v.as_str())
             .or_insert(v);
     }
