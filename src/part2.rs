@@ -18,11 +18,11 @@ use std::io::Read;
 */
 
 // split_ref must have the return type Vec<&str>
-fn split_ref(s: &str) -> Vec<&str> {
+pub fn split_ref(s: &str) -> Vec<&str> {
     s.split_whitespace().collect()
 }
 // split_clone must have the return type Vec<String>
-fn split_clone(s: &str) -> Vec<String> {
+pub fn split_clone(s: &str) -> Vec<String> {
     s.split_whitespace().map(str::to_owned).collect()
 }
 
@@ -50,7 +50,7 @@ fn test_split_clone(){
     Return a new String (we will see later how to return a &str.)
 */
 
-fn pick_longest<'a>(s1: &str, s2: &str) -> String {
+pub fn pick_longest(s1: &str, s2: &str) -> String {
     if s1.len() >= s2.len() {
         s1.to_string()
     } else {
@@ -101,7 +101,7 @@ pub fn file_to_string(path: &str) -> String {
         }
 
         let valid = &buffer[..bytes_read];
-        r += str::from_utf8(&valid).expect("safe conversion");
+        r += str::from_utf8(valid).expect("safe conversion");
     }
     r
 }

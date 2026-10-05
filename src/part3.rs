@@ -22,11 +22,19 @@
        the two references are the same. Why don't you need to worry about this
        case in Rust?
 
-    A: 
+    A: Rust one allow atmost one mutatble reference at all time.
 
     (Try writing a unit test where they are both
     the same, i.e. swap_ints(&mut x, &mut x).)
 */
+
+// Won't compile
+// #[test]
+// fn swap_same_test() {
+//     let mut x = 1;
+//     swap_ints(&mut x, &mut x);
+// }
+
 pub fn swap_ints(x1: &mut i32, x2: &mut i32) {
     let tmp  = *x1;
 
@@ -37,16 +45,19 @@ pub fn swap_ints(x1: &mut i32, x2: &mut i32) {
 /*
     Problem 2: String duplication
 */
-// #[test]
-// fn copy_string_test() {
-//     let str1 = String::from("foo");
-//     let str2 = str1;
-//     assert_eq!(str1, str2);
-// }
+#[test]
+fn copy_string_test() {
+    let str1 = String::from("foo");
+    let str2 = str1.clone();
+    assert_eq!(str1, str2);
+}
 // This test doesn't work. Fix it by copying strings properly.
 // Q1. What went wrong?
+// A: String is a owership, one string can have one owner. Also 
+// because String doesn't implement copy by default because it allocates in heap
 
 // Q2. How come it works fine here?
+// A: i32 implements copy by default 
 #[test]
 fn copy_int_test() {
     let i1 = 1;
@@ -56,7 +67,19 @@ fn copy_int_test() {
 
 // Now implement the following function that duplicates a string n times.
 fn duplicate_string(s: &str, times: usize) -> Vec<String> {
-    unimplemented!()
+    let mut r = Vec::new();  
+    for _ in 0..times {
+        r.push(s.to_string());
+    }
+    r
+}
+
+#[test]
+fn duplicate_string_test() {
+    assert_eq!(
+        duplicate_string("test", 3),
+        vec!["test", "test", "test"]
+    )
 }
 
 /*
