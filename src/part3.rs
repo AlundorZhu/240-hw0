@@ -36,10 +36,7 @@
 // }
 
 pub fn swap_ints(x1: &mut i32, x2: &mut i32) {
-    let tmp = *x1;
-
-    *x1 = *x2;
-    *x2 = tmp;
+    std::mem::swap(&mut *x1, &mut *x2);
 }
 
 /*
@@ -126,9 +123,9 @@ fn new_ref_str() -> &'static str {
 // The same function from part2
 fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
     if s1.len() >= s2.len() {
-        return s1;
+        s1
     } else {
-        return s2;
+        s2
     }
 }
 
@@ -176,12 +173,12 @@ fn pick_longest_test_v1() {
     )
 }
 
-fn pick_longest_in_v2<'a>(v: Vec<&'a str>) -> &'a str {
+fn pick_longest_in_v2(v: Vec<&str>) -> &str {
     let mut r = "";
     for s in v {
         r = pick_longest2(r, s);
     }
-    return r;
+    r
 }
 
 #[test]
@@ -206,9 +203,7 @@ fn pick_longest_test_v2() {
 fn pad_with_zeros_v1(v: Vec<usize>, desired_len: usize) -> Vec<usize> {
     assert!(v.len() <= desired_len);
     let mut r = v.clone();
-    for _ in v.len()..desired_len {
-        r.push(0);
-    }
+    r.resize(desired_len, 0);
     debug_assert_eq!(r.len(), desired_len);
     r
 }
@@ -216,9 +211,7 @@ fn pad_with_zeros_v1(v: Vec<usize>, desired_len: usize) -> Vec<usize> {
 fn pad_with_zeros_v2(slice: &[usize], desired_len: usize) -> Vec<usize> {
     assert!(slice.len() <= desired_len);
     let mut r = slice.to_vec();
-    for _ in slice.len()..desired_len {
-        r.push(0);
-    }
+    r.resize(desired_len, 0);
     debug_assert_eq!(r.len(), desired_len);
     r
 }
