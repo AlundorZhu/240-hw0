@@ -22,11 +22,16 @@
        the two references are the same. Why don't you need to worry about this
        case in Rust?
 
+    A: 
+
     (Try writing a unit test where they are both
     the same, i.e. swap_ints(&mut x, &mut x).)
 */
 pub fn swap_ints(x1: &mut i32, x2: &mut i32) {
-    unimplemented!()
+    let tmp  = *x1;
+
+    *x1 = *x2;
+    *x2 = tmp;
 }
 
 /*
