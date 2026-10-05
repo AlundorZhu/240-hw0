@@ -57,7 +57,7 @@ pub fn pick_longest(s1: &str, s2: &str) -> String {
 #[test]
 fn test_pick_longest() {
     assert_eq!(
-        pick_longest(&"cat".to_string(), &"dog".to_string()),
+        pick_longest("cat", "dog"),
         "cat".to_string()
     );
 }

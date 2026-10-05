@@ -80,6 +80,7 @@ fn duplicate_string_test() {
     it's called.
 */
 
+#[allow(clippy::ptr_arg)]
 pub fn copy_me(string: /* Change in here only*/ &String) -> String {
     string.clone()
 }
