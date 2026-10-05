@@ -90,22 +90,22 @@ fn duplicate_string_test() {
     it's called.
 */
 
-// fn copy_me(string: /* Change in here only*/ String) -> String {
-//     string.clone()
-// }
+fn copy_me(string: /* Change in here only*/ &String) -> String {
+    string.clone()
+}
 
-// #[test]
-// fn copy_me_test() {
-//     let str1 = String::from("foo");
-//     assert_eq!(str1, copy_me(/* Change in here only*/ str1));
-// }
+#[test]
+fn copy_me_test() {
+    let str1 = String::from("foo");
+    assert_eq!(str1, copy_me(/* Change in here only*/ &str1));
+}
 
-// #[test]
-// fn copy_me_test2() {
-//     let str1 = String::from("foo");
-//     let str2 = copy_me(str1 /* Change in here only*/);
-//     assert_eq!(str1, str2);
-// }
+#[test]
+fn copy_me_test2() {
+    let str1 = String::from("foo");
+    let str2 = copy_me(&str1 /* Change in here only*/);
+    assert_eq!(str1, str2);
+}
 
 /*
     Problem 4: Lifetime specifiers
@@ -117,18 +117,23 @@ fn duplicate_string_test() {
     such as "unsafe code" can be used to turn off Rust's safety and lifetime
     checks.)
 */
-// fn new_ref_string() -> &String {
-//     unimplemented!();
-// }
+static  EMPTY: String = String::new();
+fn new_ref_string() -> &'static String {
+    &EMPTY
+}
 
-// fn new_ref_str() -> &str {
-//     unimplemented!();
-// }
+fn new_ref_str() -> &'static str {
+    "hello"
+}
 
 // The same function from part2
-// fn pick_longest2(s1: &str, s2: &str) -> &str {
-//     unimplemented!()
-// }
+fn pick_longest2<'a>(s1: &'a str, s2: &'a str) -> &'a str {
+    if s1.len() >= s2.len(){
+        return s1;
+    } else {
+        return s2;
+    }
+}
 
 /*
     Problem 5: Using functions with lifetimes
@@ -140,16 +145,46 @@ fn duplicate_string_test() {
 
     Q1. In pick_longest_in_v2, if you were to explicitly specify the lifetime
         of the input and output, what should it be?
+    A: The lifetime of the output string should be as long as the string in the vectors
 
     Q2. What are the pros and cons of v1 and v2?
+    
+    A: 
+        v1 pros: don't need lifetime annotations, easier to read and write
+        v1 cons: It only accepts Vec<String>. It needs a .to_string() call which allocate the memory
+
+        v2 pros: It accepts Vec<&str> and Vec<String> 
+        v2 cons: It needs lifetime annotations. And the returned str have it's lifetime tide to the str in 
+                 the vector. Can't use it after the str in the vector get dropped.
 */
 
 fn pick_longest_in_v1(v: Vec<String>) -> String {
-    unimplemented!()
+    let mut r  = "";
+    for s in &v {
+        r = pick_longest2(r, s.as_str());
+    }
+    r.to_string()
 }
 
-fn pick_longest_in_v2(v: Vec<&str>) -> &str {
-    unimplemented!()
+#[test]
+fn pick_longest_test_v1() {
+    assert_eq!(pick_longest_in_v1(vec![]), "");
+    assert_eq!(pick_longest_in_v1(vec!["a".to_string(), "abc".to_string(), "ab".to_string()]), "abc")
+}
+
+fn pick_longest_in_v2<'a>(v: Vec<&'a str>) -> &'a str {
+    let mut r = "";
+    for s in v {
+        r = pick_longest2(r, s);
+    }
+    return r;
+}
+
+
+#[test]
+fn pick_longest_test_v2() {
+    assert_eq!(pick_longest_in_v2(vec![]), "");
+    assert_eq!(pick_longest_in_v2(vec!["a", "abc", "ab"]), "abc")
 }
 
 /*
