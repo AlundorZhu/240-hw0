@@ -196,21 +196,36 @@ fn pick_longest_test_v2() {
     Use .clone() if necessary to make any additional unit tests compile.
 
     Which of these functions do you prefer? Which is the most efficient?
+
+    A: I prefer v3, it's the most efficient because it didn't copy the old vec
 */
 
 fn pad_with_zeros_v1(v: Vec<usize>, desired_len: usize) -> Vec<usize> {
-    unimplemented!()
-    // debug_assert_eq!(result.len(), desired_len);
+    assert!(v.len() <= desired_len);
+    let mut r = v.clone();
+    for _ in v.len()..desired_len {
+        r.push(0);
+    }
+    debug_assert_eq!(r.len(), desired_len);
+    r
 }
 
 fn pad_with_zeros_v2(slice: &[usize], desired_len: usize) -> Vec<usize> {
-    unimplemented!()
-    // debug_assert_eq!(result.len(), desired_len);
+    assert!(slice.len() <= desired_len);
+    let mut r = slice.to_vec();
+    for _ in slice.len()..desired_len {
+        r.push(0);
+    }
+    debug_assert_eq!(r.len(), desired_len);
+    r
 }
 
 fn pad_with_zeros_v3(v: &mut Vec<usize>, desired_len: usize) {
-    unimplemented!()
-    // debug_assert_eq!(v.len(), desired_len);
+    assert!(v.len() <= desired_len);
+    for _ in v.len()..desired_len {
+        v.push(0);
+    }
+    debug_assert_eq!(v.len(), desired_len);
 }
 
 #[test]
@@ -247,21 +262,53 @@ fn test_pad_twice_v3() {
     Why is this more general than being passed a &[bool]
     and cloning it?
 
+    A: First it's more efficient then making a copy and then append, 
+       second it makes sense to take ownership when you are mutating it.
+
     Second, write a function which returns whether
     a row equals the first row in the vector of vectors.
     Notice that it does not take ownership over the row.
 
     Why is this more general than being passed a Vec<bool>?
+
+    A: here row can take either Vec<bool> or a slice.  
 */
 
 fn append_row(grid: &mut Vec<Vec<bool>>, row: Vec<bool>) {
-    unimplemented!()
+    grid.push(row);
 }
 
 fn is_first_row(grid: &[Vec<bool>], row: &[bool]) -> bool {
-    // Check if row is the first row in grid
-    // Remember to handle the case when grid is empty
-    unimplemented!()
+    grid.first().is_some_and(|first| first == row)
+}
+
+#[test]
+fn append_row_test() {
+    let mut grid = Vec::new();
+    append_row(&mut grid, vec![true, false]);
+    assert_eq!(grid, vec![vec![true, false]]);
+
+    append_row(&mut grid, vec![false]);
+    append_row(&mut grid, vec![]);
+    assert_eq!(grid, vec![vec![true, false], vec![false], vec![]]);
+}
+
+#[test]
+fn is_first_row_test() {
+    // Empty grid has no first row
+    assert!(!is_first_row(&[], &[true]));
+    assert!(!is_first_row(&[], &[]));
+
+    let grid = vec![vec![true, false], vec![false, true]];
+    assert!(is_first_row(&grid, &[true, false]));
+    // Matches a later row, not the first
+    assert!(!is_first_row(&grid, &[false, true]));
+    // Prefix and different length don't match
+    assert!(!is_first_row(&grid, &[true]));
+    assert!(!is_first_row(&grid, &[true, false, true]));
+    // Works with a Vec passed as a slice too
+    let row = vec![true, false];
+    assert!(is_first_row(&grid, &row));
 }
 
 /*
@@ -280,18 +327,50 @@ use std::collections::HashMap;
 // https://doc.rust-lang.org/std/collections/struct.HashMap.html
 
 fn vector_to_hashmap(v: &[(i32, String)]) -> HashMap<i32, String> {
-    unimplemented!();
+    let mut r: HashMap<i32, String> = HashMap::new();
+    for (k, v) in v {
+        r.insert(*k, v.clone());
+    }
+    r
 }
 
 // Now rewrite this function to delete all entries in hashmap where the keys
 // are negative.
 fn delete_negative_keys(h: &mut HashMap<i32, i32>) {
-    // This fails, uncomment to see error.
-    // for k in h.keys() {
-    //     if *k < 0 {
-    //         h.remove(k);
-    //     }
-    // }
+    h.retain(|k, _| *k >= 0);
+}
+
+#[test]
+fn vector_to_hashmap_test() {
+    assert!(vector_to_hashmap(&[]).is_empty());
+
+    let v = vec![(1, String::from("one")), (-2, String::from("neg two"))];
+    let h = vector_to_hashmap(&v);
+    assert_eq!(h.len(), 2);
+    assert_eq!(h[&1], "one");
+    assert_eq!(h[&-2], "neg two");
+    // v is only borrowed, so it's still usable
+    assert_eq!(v.len(), 2);
+
+    // Duplicate keys: the later value wins
+    let h = vector_to_hashmap(&[(1, "a".to_string()), (1, "b".to_string())]);
+    assert_eq!(h, HashMap::from([(1, "b".to_string())]));
+}
+
+#[test]
+fn delete_negative_keys_test() {
+    let mut h = HashMap::from([(-3, 1), (-1, 2), (0, 3), (5, -4)]);
+    delete_negative_keys(&mut h);
+    // 0 is kept, and negative values don't matter
+    assert_eq!(h, HashMap::from([(0, 3), (5, -4)]));
+
+    let mut h = HashMap::from([(-1, 1), (-2, 2)]);
+    delete_negative_keys(&mut h);
+    assert!(h.is_empty());
+
+    let mut h: HashMap<i32, i32> = HashMap::new();
+    delete_negative_keys(&mut h);
+    assert!(h.is_empty());
 }
 
 /*
@@ -317,5 +396,39 @@ fn merge_maps(
     merged: &mut HashMap<String, String>,
     add: HashMap<String,String>
 ) {
-    unimplemented!()
+    for (k, v) in add {
+        merged.entry(k)
+            .and_modify(|existing| *existing += v.as_str())
+            .or_insert(v);
+    }
+}
+
+#[test]
+fn merge_maps_test() {
+    fn map(pairs: &[(&str, &str)]) -> HashMap<String, String> {
+        pairs.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect()
+    }
+
+    // Existing keys get appended, new keys get inserted, untouched keys stay
+    let mut merged = map(&[("a", "x"), ("b", "y")]);
+    merge_maps(&mut merged, map(&[("a", "z"), ("c", "w")]));
+    assert_eq!(merged, map(&[("a", "xz"), ("b", "y"), ("c", "w")]));
+
+    // Merging again keeps appending
+    merge_maps(&mut merged, map(&[("a", "!")]));
+    assert_eq!(merged["a"], "xz!");
+
+    // Empty add changes nothing
+    merge_maps(&mut merged, HashMap::new());
+    assert_eq!(merged, map(&[("a", "xz!"), ("b", "y"), ("c", "w")]));
+
+    // Empty merged just becomes a copy of add
+    let mut merged = HashMap::new();
+    merge_maps(&mut merged, map(&[("k", "v")]));
+    assert_eq!(merged, map(&[("k", "v")]));
+
+    // Appending an empty string leaves the value as is
+    let mut merged = map(&[("a", "x")]);
+    merge_maps(&mut merged, map(&[("a", "")]));
+    assert_eq!(merged["a"], "x");
 }
